@@ -72,7 +72,7 @@ The page is organized into reusable narrative modules that scale as the product 
 ## Live Preview
 
 Link to the website:  
-`https://denysovski.github.io/CLLegacy/`
+https://denysovski.github.io/CLLegacy/
 
 ## Repository Files
 

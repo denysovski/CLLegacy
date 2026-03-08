@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comfort Legacy CL - Engineered Comfort</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.34/dist/lenis.min.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400&display=swap" rel="stylesheet">
+
+    <style>
+        html.lenis { height: auto; }
+        .lenis.lenis-smooth { scroll-behavior: auto !important; }
+        .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+        .lenis.lenis-stopped { overflow: hidden; }
+        .lenis.lenis-scrolling iframe { pointer-events: none; }
+
+        .clip-img { clip-path: inset(100% 0 0 0); }
+        .clip-section { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .site-shell { opacity: 0; }
+
+        #scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            z-index: 120;
+            background: transparent;
+            pointer-events: none;
+        }
+
+        #scroll-progress-bar {
+            width: 100%;
+            height: 100%;
+            transform-origin: left center;
+            transform: scaleX(0);
+            background: linear-gradient(90deg, #2d2a28 0%, #8a8681 100%);
+        }
+
+        #loader-overlay,
+        #welcome-overlay {
+            position: fixed;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            z-index: 140;
+            background: #ffffff;
+        }
+
+        #welcome-overlay {
+            z-index: 130;
+            display: none;
+            opacity: 0;
+        }
+
+        .luma-spin {
+            width: 120px;
+            height: 120px;
+            border-radius: 999px;
+            position: relative;
+            display: grid;
+            place-items: center;
+        }
+
+        .luma-ring {
+            position: absolute;
+            inset: 0;
+            border-radius: 999px;
+            border: 1px solid #d7d3cc;
+            border-top-color: #1a1817;
+            border-bottom-color: #1a1817;
+            animation: spin 1.1s linear infinite;
+        }
+
+        .luma-ring:nth-child(2) {
+            inset: 18px;
+            animation-direction: reverse;
+            animation-duration: 1.55s;
+            border-color: #e4e1da;
+            border-left-color: #1a1817;
+            border-right-color: #1a1817;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        #welcome-text {
+            font-size: clamp(2rem, 8vw, 7rem);
+            font-weight: 300;
+            letter-spacing: -0.06em;
+            color: #111;
+            text-transform: uppercase;
+            opacity: 0;
+            transform: translateY(24px);
+        }
+
+        .secret-popup {
+            position: fixed;
+            z-index: 185;
+            top: -9999px;
+            left: -9999px;
+            max-width: 320px;
+            background: #ffffff;
+            color: #171514;
+            border: 1px solid #d8d2c8;
+            border-radius: 14px;
+            padding: .72rem .95rem;
+            font-size: .7rem;
+            line-height: 1.4;
+            letter-spacing: .08em;
+            text-transform: none;
+            pointer-events: none;
+            opacity: 0;
+            transform: translate(0, 0);
+            box-shadow: 0 14px 28px rgba(23, 21, 20, 0.14);
+        }
+
+        .protocol-card {
+            transition: background-color .35s ease, border-color .35s ease, color .35s ease, transform .35s ease;
+        }
+
+        .protocol-card:hover {
+            background: #e8dccd;
+            border-color: #d6c5af;
+            color: #2d2a28;
+            transform: translateY(-3px);
+        }
+
+        .protocol-card:hover p,
+        .protocol-card:hover h3,
+        .protocol-card:hover span {
+            color: #2d2a28 !important;
+        }
+
+        .engineering-trigger {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1.25rem 0;
+            transition: color .28s ease;
+        }
+
+        .engineering-panel {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height .45s ease, opacity .35s ease;
+        }
+
+        .engineering-item.open .engineering-panel {
+            max-height: 220px;
+            opacity: 1;
+        }
+
+        .testimonials-mask {
+            mask-image: linear-gradient(to bottom, transparent, black 13%, black 87%, transparent);
+            -webkit-mask-image: linear-gradient(to bottom, transparent, black 13%, black 87%, transparent);
+        }
+
+        .testimonials-track {
+            will-change: transform;
+            transform: translate3d(0, 0, 0);
+        }
+
+        .testimonials-col article {
+            background: #fbf8f2;
+            border-color: #e7ddcf;
+            box-shadow: 0 10px 18px rgba(45, 42, 40, 0.08);
+        }
+
+        .material-item.active {
+            color: #2d2a28;
+            transform: translateX(10px);
+        }
+
+        .material-item.active .material-line {
+            transform: scaleX(1);
+            opacity: 1;
+        }
+
+        .material-line {
+            transform: scaleX(0);
+            transform-origin: left;
+            opacity: .45;
+            transition: transform .32s ease, opacity .32s ease;
+        }
+
+        .material-caption {
+            display: none !important;
+        }
+
+        .footer-link {
+            transition: all .28s ease;
+        }
+
+        .footer-link:hover {
+            color: #2d2a28;
+            transform: translateX(4px);
+        }
+
+        .wave-word {
+            display: inline-block;
+            white-space: pre;
+        }
+
+        .cursor-ring,
+        .cursor-dot {
+            position: fixed;
+            top: 0;
+            left: 0;
+            border-radius: 999px;
+            pointer-events: none;
+            z-index: 170;
+            mix-blend-mode: difference;
+            transform: translate(-50%, -50%);
+        }
+
+        .cursor-ring {
+            width: 28px;
+            height: 28px;
+            border: 1.5px solid #ffffff;
+            background: transparent;
+        }
+
+        .cursor-dot {
+            width: 7px;
+            height: 7px;
+            background: #ffffff;
+        }
+
+        @media (pointer: fine) {
+            *, *::before, *::after {
+                cursor: none !important;
+            }
+        }
+
+        @media (pointer: coarse) {
+            .cursor-ring,
+            .cursor-dot {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-[#f4f1eb] text-[#2d2a28] font-sans antialiased selection:bg-[#2d2a28] selection:text-[#f4f1eb] overflow-x-hidden overflow-y-hidden">
+
+    <div id="scroll-progress"><div id="scroll-progress-bar"></div></div>
+
+    <div id="loader-overlay">
+        <div class="text-center">
+            <div class="luma-spin mx-auto">
+                <div class="luma-ring"></div>
+                <div class="luma-ring"></div>
+            </div>
+            <p class="text-[10px] uppercase tracking-[0.3em] text-[#8a8681] mt-6">Booting comfort legacy cl system</p>
+        </div>
+    </div>
+
+    <div id="welcome-overlay">
+        <h1 id="welcome-text">Welcome in the future.</h1>
+    </div>
+
+    <div id="secret-popup" class="secret-popup"></div>
+    <div id="cursor-ring" class="cursor-ring"></div>
+    <div id="cursor-dot" class="cursor-dot"></div>
+
+    <div id="site-shell" class="site-shell">
+        <nav id="site-nav" class="fixed top-0 w-full z-[100] px-6 md:px-12 lg:px-20 py-5 flex justify-end items-center pointer-events-none">
+            <button id="open-menu" class="pointer-events-auto w-[18rem] max-w-[90vw] flex items-center justify-between text-sm font-medium text-[#2d2a28] bg-[#ebe6dd] border border-[#cfc8bc] rounded-full px-5 py-2.5 shadow-sm hover:bg-[#e2dbcf] transition-all group">
+                <span class="uppercase tracking-[0.14em] text-[11px]">CL Legacy</span>
+                <span class="text-[#8f8880]">•</span>
+                <span class="uppercase tracking-[0.16em] text-[11px] group-hover:-translate-x-0.5 transition-transform">Menu</span>
+                <iconify-icon icon="solar:hamburger-menu-linear" width="20" height="20" style="stroke-width: 2;"></iconify-icon>
+            </button>
+        </nav>
+
+        <div id="mobile-menu" class="fixed inset-0 bg-[#f3efe7] text-[#2d2a28] z-[130] flex flex-col justify-center px-6 py-12 pointer-events-none" style="transform: translateX(100%);">
+
+            <button id="close-menu" class="absolute top-6 right-6 flex items-center gap-2 text-[#5e5a55] hover:text-[#2d2a28] transition-colors group z-10">
+                <span class="uppercase tracking-widest text-xs mr-2 group-hover:-translate-x-1 transition-transform">Close</span>
+                <iconify-icon icon="solar:close-circle-linear" width="28" height="28" style="stroke-width: 1.5;"></iconify-icon>
+            </button>
+
+            <div class="max-w-[100rem] mx-auto w-full relative z-10">
+                <span class="text-xs tracking-[0.2em] text-[#8a8681] uppercase mb-8 block">Navigation</span>
+                <ul class="text-5xl md:text-7xl font-thin tracking-tighter uppercase space-y-6 flex flex-col">
+                    <li><a href="#" class="hover:text-[#7d7770] hover:translate-x-4 transition-all duration-300 block w-fit">Collection</a></li>
+                    <li><a href="#" class="hover:text-[#7d7770] hover:translate-x-4 transition-all duration-300 block w-fit">The Paradigm</a></li>
+                    <li><a href="#" class="hover:text-[#7d7770] hover:translate-x-4 transition-all duration-300 block w-fit">Journal</a></li>
+                    <li><a href="#" class="hover:text-[#7d7770] hover:translate-x-4 transition-all duration-300 block w-fit">Consultation</a></li>
+                </ul>
+
+                <div class="mt-24 border-t border-[#33302d] pt-8 flex flex-col md:flex-row justify-between gap-8 text-sm font-light">
+                    <div class="flex gap-6">
+                        <a href="#" class="text-[#8a8681] hover:text-[#2d2a28] transition-colors">Instagram</a>
+                        <a href="#" class="text-[#8a8681] hover:text-[#2d2a28] transition-colors">Twitter</a>
+                        <a href="#" class="text-[#8a8681] hover:text-[#2d2a28] transition-colors">Pinterest</a>
+                    </div>
+                    <p class="text-[#8a8681]">hello@comfortlegacycl.com</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 01: Hero Section -->
+        <header class="relative w-full min-h-screen flex items-center overflow-hidden pb-12">
+            <div class="absolute inset-0 z-0 opacity-40 bg-[radial-gradient(circle,#d3cfc7_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none"></div>
+
+            <div class="absolute right-0 top-0 w-full md:w-[55%] h-full z-0 overflow-hidden origin-bottom">
+                <div class="w-full h-full clip-img hero-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1600607688969-a5bfcd646154?q=80&w=2070&auto=format&fit=crop" alt="Architectural furniture" class="w-full h-[120%] object-cover object-center hero-img scale-125 opacity-90">
+                </div>
+                <div class="absolute inset-0 bg-gradient-to-r from-[#f4f1eb] via-[#f4f1eb]/90 md:via-[#f4f1eb]/40 to-transparent z-10"></div>
+            </div>
+
+            <div class="relative z-20 w-full max-w-[100rem] mx-auto px-6 md:px-12 lg:px-20 pt-32 pointer-events-none flex flex-col justify-center h-full">
+                <span class="text-xs tracking-[0.2em] text-[#8a8681] uppercase mb-8 block opacity-0 hero-el translate-y-4">V.2.0.0 Architecture</span>
+                <h1 class="font-thin tracking-tighter text-[#2d2a28] uppercase leading-[0.9] w-full flex flex-col items-start text-left self-start opacity-0 hero-el translate-y-8">
+                    <span class="block text-6xl md:text-8xl lg:text-9xl">Engineered</span>
+                    <span class="block text-6xl md:text-8xl lg:text-9xl text-[#8a8681]">For Rest</span>
+                </h1>
+
+                <div class="w-24 h-px bg-[#d3cfc7] my-10 opacity-0 hero-el scale-x-0 origin-left"></div>
+
+                <div class="flex flex-col md:flex-row gap-8 md:gap-16 items-start max-w-4xl pointer-events-auto opacity-0 hero-el translate-y-8">
+                    <p class="text-base md:text-lg font-light text-[#5e5a55] leading-relaxed flex-1">
+                        Precision-engineered for those who demand architectural integrity alongside absolute physical ease. Meticulously sculpted utilizing sustainable hardwoods and advanced responsive memory foam composites.
+                    </p>
+
+                    <div class="flex-shrink-0 space-y-6 flex-1 w-full">
+                        <div class="flex flex-wrap items-center gap-4">
+                            <button class="bg-[#1a1817] text-[#eae7e1] px-8 py-4 rounded-full text-sm font-light tracking-wide flex items-center gap-3 hover:bg-[#33302d] transition-colors shadow-lg">
+                                Configure Yours
+                                <iconify-icon icon="solar:arrow-right-up-linear" width="16" height="16" class="opacity-70" style="stroke-width: 1.5;"></iconify-icon>
+                            </button>
+                            <button class="bg-transparent border border-white text-[#2d2a28] px-8 py-4 rounded-full text-sm font-light tracking-wide flex items-center gap-3 hover:border-[#2d2a28] hover:bg-[#2d2a28] hover:text-[#eae7e1] transition-all">
+                                View Gallery
+                            </button>
+                        </div>
+
+                        <div class="flex items-center gap-4 pt-2">
+                            <div class="flex -space-x-3">
+                                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop" alt="Client portrait 1" class="w-10 h-10 rounded-full object-cover border-2 border-[#f4f1eb] shadow-sm">
+                                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop" alt="Client portrait 2" class="w-10 h-10 rounded-full object-cover border-2 border-[#f4f1eb] shadow-sm">
+                                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=400&auto=format&fit=crop" alt="Client portrait 3" class="w-10 h-10 rounded-full object-cover border-2 border-[#f4f1eb] shadow-sm">
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-sm font-light text-[#2d2a28]">2,500+ Spaces Transformed</span>
+                                <span class="text-xs font-light text-[#8a8681]">Join the architectural movement</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 02: Trust & Metrics -->
+        <section class="border-y border-[#e2dfd8] bg-[#f4f1eb] relative z-20 overflow-hidden reveal-up">
+            <div class="max-w-[100rem] mx-auto px-6 md:px-12 lg:px-20">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-y-12 divide-x-0 md:divide-x divide-[#e2dfd8] py-16">
+                    <div class="flex flex-col justify-center items-center md:items-start md:pl-8 first:pl-0 text-center md:text-left pr-4 md:pr-0 border-r md:border-r-0 border-[#e2dfd8]">
+                        <span class="text-4xl md:text-5xl font-thin tracking-tighter text-[#2d2a28] mb-2 block">10+</span>
+                        <span class="text-xs tracking-[0.2em] text-[#8a8681] uppercase font-light">Years of R&D</span>
+                    </div>
+                    <div class="flex flex-col justify-center items-center md:items-start md:pl-8 text-center md:text-left pl-4 md:pl-8">
+                        <span class="text-4xl md:text-5xl font-thin tracking-tighter text-[#2d2a28] mb-2 block">98%</span>
+                        <span class="text-xs tracking-[0.2em] text-[#8a8681] uppercase font-light">Posture Alignment</span>
+                    </div>
+                    <div class="flex flex-col justify-center items-center md:items-start md:pl-8 text-center md:text-left pr-4 md:pr-0 border-r md:border-r-0 border-[#e2dfd8] mt-12 md:mt-0">
+                        <div class="flex items-center gap-2 mb-2">
+                            <iconify-icon icon="solar:leaf-linear" width="28" class="text-[#2d2a28]" style="stroke-width: 1;"></iconify-icon>
+                            <span class="text-4xl md:text-5xl font-thin tracking-tighter text-[#2d2a28]">100%</span>
+                        </div>
+                        <span class="text-xs tracking-[0.2em] text-[#8a8681] uppercase font-light">Sustainable Materials</span>
+                    </div>
+                    <div class="flex flex-col justify-center items-center md:items-start md:pl-8 text-center md:text-left pl-4 md:pl-8 mt-12 md:mt-0">
+                        <span class="text-4xl md:text-5xl font-thin tracking-tighter text-[#2d2a28] mb-2 block flex items-center gap-1">
+                            5.0
+                            <iconify-icon icon="solar:star-linear" width="20" class="text-[#a8a39d] translate-y-1" style="stroke-width: 1.5;"></iconify-icon>
+                        </span>
+                        <span class="text-xs tracking-[0.2em] text-[#8a8681] uppercase font-light">Client Satisfaction</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 03: Existing Testimonial Section -->
+        <section class="py-32 px-6 md:px-12 lg:px-20 max-w-5xl mx-auto text-center reveal-up">
+            <iconify-icon icon="solar:quote-right-linear" width="48" class="text-[#d3cfc7] mb-8 mx-auto" style="stroke-width: 1;"></iconify-icon>
+            <h2 id="wave-quote" class="text-2xl md:text-4xl font-light leading-relaxed tracking-tight text-[#2d2a28] mb-12">
+                "Comfort Legacy CL has completely redefined our relationship with space. It is rare to find objects that respect the body's biomechanics just as deeply as they respect the visual harmony of a room."
+            </h2>
+            <div class="flex items-center justify-center gap-4">
+                <div class="w-12 h-12 rounded-full overflow-hidden bg-[#e2dfd8]">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1976&auto=format&fit=crop" alt="Sarah Jenkins" class="w-full h-full object-cover grayscale">
+                </div>
+                <div class="text-left">
+                    <span class="block text-sm font-light text-[#2d2a28] uppercase tracking-wide">Dr. Sarah Jenkins</span>
+                    <span class="block text-xs font-light text-[#8a8681] uppercase tracking-widest mt-1">Lead Ergonomist & Architect</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 04: Project Story -->
+        <section class="py-24 md:py-32 px-6 md:px-12 lg:px-20 max-w-[100rem] mx-auto border-t border-[#e2dfd8]">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
+                <div class="lg:col-span-12">
+                    <span class="text-xs tracking-[0.2em] text-[#8a8681] uppercase mb-8 block reveal-up">The Project</span>
+                    <h2 class="text-5xl md:text-7xl lg:text-8xl font-thin tracking-tighter text-[#2d2a28] leading-[0.9] uppercase break-words reveal-text-stagger">
+                        The CL<br><span class="text-[#a8a39d] md:indent-24 block">Paradigm</span>
+                    </h2>
+                </div>
+
+                <div class="lg:col-span-5 lg:col-start-8 space-y-12 mt-12 lg:-mt-24">
+                    <p class="text-2xl md:text-3xl font-light text-[#2d2a28] leading-[1.3] tracking-tight reveal-up">
+                        We observed a dissonance in modern interiors: objects were either starkly architectural but physically punishing, or comfortable yet visually formless.
+                    </p>
+                    <div class="w-full aspect-[4/5] overflow-hidden rounded-sm relative group reveal-scale">
+                        <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?q=80&w=2064&auto=format&fit=crop" alt="Design process" class="w-full h-[120%] object-cover grayscale parallax-img">
+                    </div>
+                    <div class="text-base font-light text-[#5e5a55] leading-relaxed space-y-6 reveal-up">
+                        <p>Over three years of iterative prototyping, we collaborated with orthopedic specialists and master woodworkers. The result is a collection that acts as an extension of the human body.</p>
+                    </div>
+                    <button class="group flex items-center gap-3 text-sm font-normal tracking-wide text-[#2d2a28] border-b border-[#2d2a28] pb-1 hover:text-[#8a8681] hover:border-[#8a8681] transition-colors w-fit reveal-up">
+                        Read the full journal
+                        <iconify-icon icon="solar:arrow-right-linear" width="16" height="16" class="group-hover:translate-x-1 transition-transform" style="stroke-width: 1.5;"></iconify-icon>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 05: Interactive Feature Highlights -->
+        <section class="py-32 px-6 md:px-12 lg:px-20 max-w-[100rem] mx-auto border-t border-[#e2dfd8]">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+                <div class="order-2 lg:order-1 reveal-up">
+                    <span class="text-xs tracking-[0.2em] text-[#8a8681] uppercase block mb-6">Adaptability</span>
+                    <h2 class="text-4xl md:text-6xl font-thin tracking-tighter uppercase leading-[0.9]">Responsive<br>Calibration</h2>
+                    <p class="mt-8 text-lg font-light text-[#5e5a55] max-w-md leading-relaxed">
+                        Personalize your biomechanical support. Switch effortlessly between structured, static architectural mode and fluid, responsive kinetic alignment.
+                    </p>
+
+                    <div class="mt-12 border-t border-[#e2dfd8] pt-10 space-y-6">
+                        <p class="text-sm md:text-base text-[#5e5a55] font-light leading-relaxed max-w-lg">Explore the calibration logic, material science, and ergonomic rationale behind each Comfort Legacy CL series before scheduling a live consultation.</p>
+                        <div class="flex flex-wrap gap-4">
+                            <button class="px-7 py-3 rounded-full bg-[#1a1817] text-[#f4f1eb] text-xs md:text-sm uppercase tracking-[0.16em] hover:bg-[#2e2a27] transition-colors">Learn More</button>
+                            <button class="px-7 py-3 rounded-full border border-[#cfc9bf] text-[#2d2a28] text-xs md:text-sm uppercase tracking-[0.16em] hover:bg-[#2d2a28] hover:text-[#f4f1eb] transition-all">See Materials</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="order-1 lg:order-2 w-full aspect-square bg-[#e4e1d9] rounded-sm relative overflow-hidden group reveal-scale p-8 flex items-center justify-center shadow-inner">
+                    <img src="https://images.unsplash.com/photo-1592078615290-033ee584e267?q=80&w=2000&auto=format&fit=crop" alt="Kinetic mechanism" class="w-[85%] h-auto object-contain mix-blend-multiply drop-shadow-2xl transition-transform duration-[2000ms]" id="calibration-img">
+
+                    <div class="absolute inset-0 border border-[#d3cfc7]/50 m-4 pointer-events-none flex items-center justify-center">
+                        <div class="w-px h-full bg-[#d3cfc7]/30 absolute left-1/2"></div>
+                        <div class="w-full h-px bg-[#d3cfc7]/30 absolute top-1/2"></div>
+                        <div class="absolute w-4 h-4 border border-[#8a8681] rounded-full flex items-center justify-center transition-all duration-500" id="target-reticle">
+                            <div class="w-1 h-1 bg-[#2d2a28] rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 06: Horizontal Scroll Gallery -->
+        <section class="horizontal-scroll-section relative h-screen bg-[#181615] text-[#eae7e1] overflow-hidden flex items-center">
+            <div class="absolute top-12 left-6 md:left-12 lg:left-20 z-20 pointer-events-none">
+                <span class="text-xs tracking-[0.2em] text-[#a8a39d] uppercase block mb-4">Space Integration</span>
+                <h2 class="text-4xl md:text-6xl font-thin tracking-tighter uppercase leading-none">Architectural<br>Context</h2>
+            </div>
+
+            <div class="horizontal-scroll-container flex w-[300vw] h-[70vh] items-center px-[10vw] gap-[10vw]">
+                <div class="w-[80vw] md:w-[60vw] h-full flex-shrink-0 relative group">
+                    <div class="w-full h-full overflow-hidden rounded-sm">
+                        <img src="https://images.unsplash.com/photo-1550581190-9c1c48d21d6c?q=80&w=2009&auto=format&fit=crop" alt="Space 01" class="w-full h-[120%] object-cover gallery-parallax opacity-80 group-hover:opacity-100 transition-opacity duration-700">
+                    </div>
+                    <div class="absolute -bottom-12 left-0 w-full flex justify-between items-end">
+                        <span class="text-xs tracking-[0.2em] text-[#a8a39d] uppercase">01 / Residence 04</span>
+                        <h3 class="text-2xl md:text-4xl font-light tracking-tight">The Glass Pavilion</h3>
+                    </div>
+                </div>
+
+                <div class="w-[80vw] md:w-[60vw] h-full flex-shrink-0 relative group mt-32">
+                    <div class="w-full h-full overflow-hidden rounded-sm">
+                        <img src="https://images.unsplash.com/photo-1600210492493-0946911123ea?q=80&w=1974&auto=format&fit=crop" alt="Space 02" class="w-full h-[120%] object-cover gallery-parallax opacity-80 group-hover:opacity-100 transition-opacity duration-700">
+                    </div>
+                    <div class="absolute -bottom-12 left-0 w-full flex justify-between items-end">
+                        <span class="text-xs tracking-[0.2em] text-[#a8a39d] uppercase">02 / Studio Setup</span>
+                        <h3 class="text-2xl md:text-4xl font-light tracking-tight">Minimalist Workscape</h3>
+                    </div>
+                </div>
+
+                <div class="w-[80vw] md:w-[60vw] h-full flex-shrink-0 relative group -mt-20">
+                    <div class="w-full h-full overflow-hidden rounded-sm">
+                        <img src="https://images.unsplash.com/photo-1615529182904-14819c35db37?q=80&w=2080&auto=format&fit=crop" alt="Space 03" class="w-full h-[120%] object-cover gallery-parallax opacity-80 group-hover:opacity-100 transition-opacity duration-700">
+                    </div>
+                    <div class="absolute -bottom-12 left-0 w-full flex justify-between items-end">
+                        <span class="text-xs tracking-[0.2em] text-[#a8a39d] uppercase">03 / Public Sector</span>
+                        <h3 class="text-2xl md:text-4xl font-light tracking-tight">Gallery Lounge</h3>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 07: Precision Engineering -->
+        <section class="bg-[#181615] text-[#eae7e1] py-32 md:py-48 px-6 md:px-12 lg:px-20">
+            <div class="max-w-[100rem] mx-auto">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-24 border-b border-[#33302d] pb-12 reveal-up">
+                    <h2 class="text-6xl md:text-8xl font-thin tracking-tighter leading-[0.9] uppercase">Precision<br><span class="text-[#8a8681]">Engineering</span></h2>
+                    <span class="text-xs font-light tracking-[0.2em] text-[#8a8681] uppercase mb-4 md:mb-0">Spec_089</span>
+                </div>
+
+                <div id="engineering-accordion" class="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-center">
+                    <div class="lg:col-span-4 space-y-2 reveal-up">
+                        <h3 class="text-xs tracking-[0.2em] text-[#66625d] uppercase mb-12">Series Classification</h3>
+
+                        <div class="engineering-item border-b border-[#33302d]">
+                            <button type="button" class="engineering-trigger group text-[#a8a39d] hover:text-[#eae7e1] hover-secret" data-secret="Kinetic Lounge: dynamic pressure redistribution for long deep-work sessions.">
+                                <span class="text-xs tracking-[0.2em] w-12 block opacity-50">01</span>
+                                <span class="text-lg md:text-xl font-light tracking-tight flex-grow uppercase text-left">Kinetic Lounge</span>
+                            </button>
+                            <div class="engineering-panel pb-5 pl-12 pr-2 text-sm text-[#bdb8b2] leading-relaxed">
+                                Dynamic pressure channels and micro-tilt geometry help maintain focus while reducing lower-back load in long sessions.
+                            </div>
+                        </div>
+                        <div class="engineering-item border-b border-[#33302d]">
+                            <button type="button" class="engineering-trigger group text-[#a8a39d] hover:text-[#eae7e1] hover-secret" data-secret="Minimalist Rocket: tuned elasticity with low visual mass for compact studios.">
+                                <span class="text-xs tracking-[0.2em] w-12 block opacity-50">02</span>
+                                <span class="text-lg md:text-xl font-light tracking-tight flex-grow uppercase text-left">Minimalist Rocket</span>
+                            </button>
+                            <div class="engineering-panel pb-5 pl-12 pr-2 text-sm text-[#bdb8b2] leading-relaxed">
+                                A compact silhouette with controlled rebound and balanced support, ideal for smaller work zones and hybrid desks.
+                            </div>
+                        </div>
+                        <div class="engineering-item border-b border-[#33302d]">
+                            <button type="button" class="engineering-trigger group text-[#a8a39d] hover:text-[#eae7e1] hover-secret" data-secret="Ergo-Task Hybrid: cross-mode geometry for task switching and posture resets.">
+                                <span class="text-xs tracking-[0.2em] w-12 block opacity-50">03</span>
+                                <span class="text-lg md:text-xl font-light tracking-tight flex-grow uppercase text-left">Ergo-Task Hybrid</span>
+                            </button>
+                            <div class="engineering-panel pb-5 pl-12 pr-2 text-sm text-[#bdb8b2] leading-relaxed">
+                                Mixed-task posture map that supports transitions between focus work, collaboration, and short recovery breaks.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-4 h-full">
+                        <div class="w-full aspect-[3/4] md:aspect-[4/5] bg-[#221f1e] p-4 md:p-6 rounded-sm shadow-2xl shadow-black/50 group overflow-hidden relative reveal-scale">
+                            <div class="w-full h-full overflow-hidden relative">
+                                <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=2158&auto=format&fit=crop" alt="Engineering Detail" class="w-full h-[120%] object-cover opacity-90 saturate-50 group-hover:saturate-100 group-hover:scale-105 transition-all duration-[2000ms] ease-out parallax-img">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-4 space-y-2 text-right reveal-up">
+                        <h3 class="text-xs tracking-[0.2em] text-[#66625d] uppercase mb-12">Material Synthesis</h3>
+
+                        <div class="engineering-item border-b border-[#33302d]">
+                            <button type="button" class="engineering-trigger group justify-end text-[#eae7e1] hover-secret" data-secret="Aero-grade aluminum: lightweight structural core with high fatigue resistance.">
+                                <span class="text-lg md:text-xl font-light tracking-tight flex-grow uppercase text-right">Aero-grade aluminum</span>
+                                <iconify-icon icon="solar:arrow-right-up-linear" width="20" height="20" class="ml-4 opacity-100 group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" style="stroke-width: 1.5;"></iconify-icon>
+                            </button>
+                            <div class="engineering-panel pb-5 text-sm text-[#bdb8b2] leading-relaxed text-right">
+                                Structural backbone material with low weight and high fatigue resistance for long-term frame stability.
+                            </div>
+                        </div>
+                        <div class="engineering-item border-b border-[#33302d]">
+                            <button type="button" class="engineering-trigger group justify-end text-[#a8a39d] hover:text-[#eae7e1] hover-secret" data-secret="Polymer mesh: breathable support membrane with responsive tension mapping.">
+                                <span class="text-lg md:text-xl font-light tracking-tight flex-grow uppercase text-right">PolymerMesh</span>
+                                <iconify-icon icon="solar:arrow-right-up-linear" width="20" height="20" class="ml-4 opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 group-hover:translate-x-1 transition-all" style="stroke-width: 1.5;"></iconify-icon>
+                            </button>
+                            <div class="engineering-panel pb-5 text-sm text-[#bdb8b2] leading-relaxed text-right">
+                                High-breathability layer that adapts tension response based on seated movement and pressure change.
+                            </div>
+                        </div>
+                        <div class="engineering-item border-b border-[#33302d]">
+                            <button type="button" class="engineering-trigger group justify-end text-[#a8a39d] hover:text-[#eae7e1] hover-secret" data-secret="Sourced walnut: sustainably harvested finish with warm tactile character.">
+                                <span class="text-lg md:text-xl font-light tracking-tight flex-grow uppercase text-right">Sourced walnut</span>
+                                <iconify-icon icon="solar:arrow-right-up-linear" width="20" height="20" class="ml-4 opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 group-hover:translate-x-1 transition-all" style="stroke-width: 1.5;"></iconify-icon>
+                            </button>
+                            <div class="engineering-panel pb-5 text-sm text-[#bdb8b2] leading-relaxed text-right">
+                                Warm-touch finish sourced from responsibly managed forests, built for repairability and longevity.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 08: NEW Sustainability Materials Showcase -->
+        <section id="materials" class="py-32 md:py-40 px-6 md:px-12 lg:px-20 bg-[#f7f4ee] border-t border-[#e2dfd8]">
+            <div class="max-w-[100rem] mx-auto">
+                <div class="text-center mb-16 reveal-up">
+                    <span class="text-xs tracking-[0.2em] text-[#8a8681] uppercase block mb-4">Animated Showcase</span>
+                    <h2 class="text-5xl md:text-7xl font-thin tracking-tighter uppercase leading-[0.9]">Sustainability<br><span class="text-[#a8a39d]">Materials</span></h2>
+                    <p class="mt-8 text-lg font-light text-[#5e5a55] max-w-2xl mx-auto">Inspired by modern animated slideshow interactions: text-driven hover states with responsive image transitions and continuous content cycling.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+                    <div class="lg:col-span-5 space-y-5" id="materials-list">
+                        <button class="material-item active w-full text-left text-3xl md:text-5xl font-light tracking-tight uppercase text-[#8a8681] transition-all" data-image="https://images.unsplash.com/photo-1769745836625-4cac1ba455a4?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" data-title="Reclaimed Oak Shell" data-desc="FSC-certified reclaimed oak reduces embodied carbon while preserving structural precision.">
+                            Reclaimed Oak Shell
+                            <span class="material-line block h-px bg-[#2d2a28] mt-2"></span>
+                        </button>
+                        <button class="material-item w-full text-left text-3xl md:text-5xl font-light tracking-tight uppercase text-[#8a8681] transition-all" data-image="https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=2070&auto=format&fit=crop" data-title="Bio-Resin Composite" data-desc="Plant-based binding matrix replaces petrochemical resin systems and improves recyclability.">
+                            Bio-Resin Composite
+                            <span class="material-line block h-px bg-[#2d2a28] mt-2"></span>
+                        </button>
+                        <button class="material-item w-full text-left text-3xl md:text-5xl font-light tracking-tight uppercase text-[#8a8681] transition-all" data-image="https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?q=80&w=2070&auto=format&fit=crop" data-title="Wool Felt Mesh" data-desc="Natural wool blend enables passive acoustic balance and breathable thermal comfort.">
+                            Wool Felt Mesh
+                            <span class="material-line block h-px bg-[#2d2a28] mt-2"></span>
+                        </button>
+                        <button class="material-item w-full text-left text-3xl md:text-5xl font-light tracking-tight uppercase text-[#8a8681] transition-all" data-image="https://images.unsplash.com/photo-1616046229478-9901c5536a45?q=80&w=2070&auto=format&fit=crop" data-title="Recycled Aluminum Spine" data-desc="Aerospace-grade recycled aluminum creates high stiffness at lower mass for circular builds.">
+                            Recycled Aluminum Spine
+                            <span class="material-line block h-px bg-[#2d2a28] mt-2"></span>
+                        </button>
+                    </div>
+
+                    <div class="lg:col-span-7 reveal-scale">
+                        <div class="material-visual relative aspect-[16/10] bg-[#e6e2d9] p-4 md:p-6 overflow-hidden rounded-sm">
+                            <img id="material-image" src="https://images.unsplash.com/photo-1769745836625-4cac1ba455a4?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Material" class="w-full h-full object-cover">
+                            <div class="material-caption absolute left-6 right-6 bottom-6">
+                                <p id="material-title" class="text-lg md:text-2xl uppercase tracking-[0.08em] text-[#f2efe9] drop-shadow-[0_2px_10px_rgba(0,0,0,0.45)]">Reclaimed Oak Shell</p>
+                                <p id="material-desc" class="mt-2 text-xs md:text-sm uppercase tracking-[0.12em] text-[#ded7cc] drop-shadow-[0_2px_10px_rgba(0,0,0,0.45)]">FSC-certified reclaimed oak reduces embodied carbon while preserving structural precision.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 09: NEW What Clients Say (Testimonials Columns) -->
+        <section id="testimonials-columns" class="py-32 md:py-40 px-6 md:px-12 lg:px-20 border-t border-[#e2dfd8] bg-[#f4f1eb]">
+            <div class="max-w-[100rem] mx-auto">
+                <div class="text-right max-w-2xl ml-auto pr-1 reveal-up">
+                    <span class="text-xs tracking-[0.2em] text-[#8a8681] uppercase block mb-4">Testimonials</span>
+                    <h2 class="text-5xl md:text-7xl font-thin tracking-tighter uppercase leading-[0.9]">What Clients<br><span class="text-[#a8a39d]">Say</span></h2>
+                    <p class="mt-7 text-lg font-light text-[#5e5a55]">A multi-column animated testimonial stream inspired by modern 21st.dev component systems, adapted to Comfort Legacy CL’s visual language.</p>
+                </div>
+
+                <div class="mt-16 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 max-h-[760px] overflow-hidden testimonials-mask">
+                    <div class="testimonials-col bg-[#f0e9df] border border-[#ddd1c0] p-4 rounded-3xl shadow-[0_12px_30px_rgba(45,42,40,0.06)]">
+                        <div class="testimonials-track space-y-4" style="--speed: 18s;">
+                            <article class="bg-[#fbf8f2] border border-[#e7ddcf] rounded-2xl p-6 shadow-[0_10px_18px_rgba(45,42,40,0.08)]">
+                                <div class="mb-4"><p class="text-xs uppercase tracking-[0.16em] text-[#6f7d6d]">Mila Norton · Creative Director</p></div>
+                                <p class="text-base md:text-lg text-[#3f4a3e] leading-relaxed">“Comfort Legacy CL transformed our executive floor. Better posture, better focus, and cleaner visual balance.”</p>
+                            </article>
+                            <article class="bg-[#fbf8f2] border border-[#e7ddcf] rounded-2xl p-6 shadow-[0_10px_18px_rgba(45,42,40,0.08)]">
+                                <div class="mb-4"><p class="text-xs uppercase tracking-[0.16em] text-[#6f7d6d]">Arun Hale · Principal Architect</p></div>
+                                <p class="text-base md:text-lg text-[#3f4a3e] leading-relaxed">“The team translated difficult ergonomic requirements into objects that still feel gallery-ready.”</p>
+                            </article>
+                            <article class="bg-[#fbf8f2] border border-[#e7ddcf] rounded-2xl p-6 shadow-[0_10px_18px_rgba(45,42,40,0.08)]">
+                                <div class="mb-4"><p class="text-xs uppercase tracking-[0.16em] text-[#6f7d6d]">Nina Park · Operations Lead</p></div>
+                                <p class="text-base md:text-lg text-[#3f4a3e] leading-relaxed">“Deployment was smooth, documentation was clear, and users felt the difference in week one.”</p>
+                            </article>
+                            <article class="bg-[#fbf8f2] border border-[#e7ddcf] rounded-2xl p-6 shadow-[0_10px_18px_rgba(45,42,40,0.08)]">
+                                <div class="mb-4"><p class="text-xs uppercase tracking-[0.16em] text-[#6f7d6d]">Mila Norton · Creative Director</p></div>
+                                <p class="text-base md:text-lg text-[#3f4a3e] leading-relaxed">“Comfort Legacy CL transformed our executive floor. Better posture, better focus, and cleaner visual balance.”</p>
+                            </article>
+                            <article class="bg-[#fbf8f2] border border-[#e7ddcf] rounded-2xl p-6 shadow-[0_10px_18px_rgba(45,42,40,0.08)]">
+                                <div class="mb-4"><p class="text-xs uppercase tracking-[0.16em] text-[#6f7d6d]">Arun Hale · Principal Architect</p></div>
+                                <p class="text-base md:text-lg text-[#3f4a3e] leading-relaxed">“The team translated difficult ergonomic requirements into objects that still feel gallery-ready.”</p>
+                            </article>
+                            <article class="bg-[#fbf8f2] border border-[#e7ddcf] rounded-2xl p-6 shadow-[0_10px_18px_rgba(45,42,40,0.08)]">
+                                <div class="mb-4"><p class="text-xs uppercase tracking-[0.16em] text-[#6f7d6d]">Nina Park · Operations Lead</p></div>
+                                <p class="text-base md:text-lg text-[#3f4a3e] leading-relaxed">“Deployment was smooth, documentation was clear, and users felt the difference in week one.”</p>
+                            </article>
+                        </div>
+                    </div>
+
+                    <div class="testimonials-col bg-[#f0e9df] border border-[#ddd1c0] p-4 rounded-3xl shadow-[0_12px_30px_rgba(45,42,40,0.06)] hidden md:block">
+                        <div class="testimonials-track space-y-4" style="--speed: 20s;">
+                            <article class="bg-[#f5f0e8] border border-[#ddd1c0] rounded-2xl p-6">
+                                <div class="mb-4"><p class="text-xs uppercase tracking-[0.16em] text-[#6f7d6d]">Lena Ruiz · Procurement</p></div>
+                                <p class="text-base md:text-lg text-[#3f4a3e] leading-relaxed">“Sourcing transparency and sustainability data made stakeholder approval exceptionally fast.”</p>
+                            </article>
+                            <article class="bg-[#f5f0e8] border border-[#ddd1c0] rounded-2xl p-6">
+                                <div class="mb-4"><p class="text-xs uppercase tracking-[0.16em] text-[#6f7d6d]">Jon Keller · HR Director</p></div>
+                                <p class="text-base md:text-lg text-[#3f4a3e] leading-relaxed">“Our posture complaints dropped significantly after switching to the kinetic series.”</p>
+                            </article>
+                            <article class="bg-[#f5f0e8] border border-[#ddd1c0] rounded-2xl p-6">
+                                <div class="mb-4"><p class="text-xs uppercase tracking-[0.16em] text-[#6f7d6d]">Sora Lim · Interior Strategist</p></div>
+                                <p class="text-base md:text-lg text-[#3f4a3e] leading-relaxed">“Excellent blend of technical integrity and minimal architecture. Rare in this category.”</p>
+                            </article>
+                            <article class="bg-[#f5f0e8] border border-[#ddd1c0] rounded-2xl p-6">
+                                <div class="mb-4"><p class="text-xs uppercase tracking-[0.16em] text-[#6f7d6d]">Lena Ruiz · Procurement</p></div>
+                                <p class="text-base md:text-lg text-[#3f4a3e] leading-relaxed">“Sourcing transparency and sustainability data made stakeholder approval exceptionally fast.”</p>
+                            </article>
+                            <article class="bg-[#f5f0e8] border border-[#ddd1c0] rounded-2xl p-6">
+                                <div class="mb-4"><p class="text-xs uppercase tracking-[0.16em] text-[#6f7d6d]">Jon Keller · HR Director</p></div>
+                                <p class="text-base md:text-lg text-[#3f4a3e] leading-relaxed">“Our posture complaints dropped significantly after switching to the kinetic series.”</p>
+                            </article>
+                            <article class="bg-[#f5f0e8] border border-[#ddd1c0] rounded-2xl p-6">
+                                <div class="mb-4"><p class="text-xs uppercase tracking-[0.16em] text-[#6f7d6d]">Sora Lim · Interior Strategist</p></div>
+                                <p class="text-base md:text-lg text-[#3f4a3e] leading-relaxed">“Excellent blend of technical integrity and minimal architecture. Rare in this category.”</p>
+                            </article>
+                        </div>
+                    </div>
+
+                    <div class="testimonials-col bg-[#f0e9df] border border-[#ddd1c0] p-4 rounded-3xl shadow-[0_12px_30px_rgba(45,42,40,0.06)] hidden xl:block">
+                        <div class="testimonials-track space-y-4" style="--speed: 19s;">
+                            <article class="bg-[#f5f0e8] border border-[#ddd1c0] rounded-2xl p-6">
+                                <div class="mb-4"><p class="text-xs uppercase tracking-[0.16em] text-[#6f7d6d]">Dara Sato · Studio Founder</p></div>
+                                <p class="text-base md:text-lg text-[#3f4a3e] leading-relaxed">“Clients instantly notice the comfort-to-form ratio. It feels premium, natural, and intentional.”</p>
+                            </article>
+                            <article class="bg-[#f5f0e8] border border-[#ddd1c0] rounded-2xl p-6">
+                                <div class="mb-4"><p class="text-xs uppercase tracking-[0.16em] text-[#6f7d6d]">Marco Klein · Project Lead</p></div>
+                                <p class="text-base md:text-lg text-[#3f4a3e] leading-relaxed">“Support quality and post-install follow-up were exceptional from start to finish.”</p>
+                            </article>
+                            <article class="bg-[#f5f0e8] border border-[#ddd1c0] rounded-2xl p-6">
+                                <div class="mb-4"><p class="text-xs uppercase tracking-[0.16em] text-[#6f7d6d]">Eva Dane · Facility Director</p></div>
+                                <p class="text-base md:text-lg text-[#3f4a3e] leading-relaxed">“Durability, comfort and sustainability in one line. This is now our default seating spec.”</p>
+                            </article>
+                            <article class="bg-[#f5f0e8] border border-[#ddd1c0] rounded-2xl p-6">
+                                <div class="mb-4"><p class="text-xs uppercase tracking-[0.16em] text-[#6f7d6d]">Dara Sato · Studio Founder</p></div>
+                                <p class="text-base md:text-lg text-[#3f4a3e] leading-relaxed">“Clients instantly notice the comfort-to-form ratio. It feels premium, natural, and intentional.”</p>
+                            </article>
+                            <article class="bg-[#f5f0e8] border border-[#ddd1c0] rounded-2xl p-6">
+                                <div class="mb-4"><p class="text-xs uppercase tracking-[0.16em] text-[#6f7d6d]">Marco Klein · Project Lead</p></div>
+                                <p class="text-base md:text-lg text-[#3f4a3e] leading-relaxed">“Support quality and post-install follow-up were exceptional from start to finish.”</p>
+                            </article>
+                            <article class="bg-[#f5f0e8] border border-[#ddd1c0] rounded-2xl p-6">
+                                <div class="mb-4"><p class="text-xs uppercase tracking-[0.16em] text-[#6f7d6d]">Eva Dane · Facility Director</p></div>
+                                <p class="text-base md:text-lg text-[#3f4a3e] leading-relaxed">“Durability, comfort and sustainability in one line. This is now our default seating spec.”</p>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 10: NEW Future Seating Protocol -->
+        <section id="future-protocol" class="bg-[#181615] text-[#eae7e1] py-32 md:py-44 px-6 md:px-12 lg:px-20">
+            <div class="max-w-[100rem] mx-auto">
+                <div class="mb-16 reveal-up text-center md:text-left">
+                    <span class="text-xs tracking-[0.2em] text-[#8a8681] uppercase block mb-5">Progressive Design Framework</span>
+                    <h2 class="text-5xl md:text-7xl lg:text-8xl font-thin tracking-tighter uppercase leading-[0.9]">Future Seating<br><span class="text-[#8a8681]">Protocol</span></h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <article class="protocol-card rounded-2xl border border-[#33302d] p-8 md:p-10 bg-[#1f1c1b] reveal-up">
+                        <p class="text-[10px] tracking-[0.2em] uppercase text-[#8a8681]">Phase 01</p>
+                        <h3 class="text-2xl md:text-3xl mt-4 font-light uppercase tracking-tight">Spatial Diagnosis</h3>
+                        <p class="mt-6 text-sm md:text-base font-light text-[#bdb8b2] leading-relaxed">Map usage patterns, occupancy intensity, comfort bottlenecks, and circulation pressure points to build a posture-first baseline.</p>
+                        <div class="mt-6 flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.14em] text-[#8a8681]">
+                            <span class="rounded-full border border-[#3a3633] px-3 py-1">Occupancy Mapping</span>
+                            <span class="rounded-full border border-[#3a3633] px-3 py-1">Risk Scoring</span>
+                        </div>
+                    </article>
+                    <article class="protocol-card rounded-2xl border border-[#33302d] p-8 md:p-10 bg-[#1f1c1b] reveal-up">
+                        <p class="text-[10px] tracking-[0.2em] uppercase text-[#8a8681]">Phase 02</p>
+                        <h3 class="text-2xl md:text-3xl mt-4 font-light uppercase tracking-tight">Biomech Calibration</h3>
+                        <p class="mt-6 text-sm md:text-base font-light text-[#bdb8b2] leading-relaxed">Tune support geometry by work profile and define static/kinetic thresholds for longer sessions with reduced strain accumulation.</p>
+                        <div class="mt-6 flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.14em] text-[#8a8681]">
+                            <span class="rounded-full border border-[#3a3633] px-3 py-1">Pressure Curves</span>
+                            <span class="rounded-full border border-[#3a3633] px-3 py-1">Posture Signature</span>
+                        </div>
+                    </article>
+                    <article class="protocol-card rounded-2xl border border-[#33302d] p-8 md:p-10 bg-[#1f1c1b] reveal-up">
+                        <p class="text-[10px] tracking-[0.2em] uppercase text-[#8a8681]">Phase 03</p>
+                        <h3 class="text-2xl md:text-3xl mt-4 font-light uppercase tracking-tight">Circular Lifecycle</h3>
+                        <p class="mt-6 text-sm md:text-base font-light text-[#bdb8b2] leading-relaxed">Activate material passports, repair workflows, and regeneration plans to reduce waste while maximizing service life value.</p>
+                        <div class="mt-6 flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.14em] text-[#8a8681]">
+                            <span class="rounded-full border border-[#3a3633] px-3 py-1">Material Passport</span>
+                            <span class="rounded-full border border-[#3a3633] px-3 py-1">Refurbishment</span>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                    <article class="rounded-2xl border border-[#33302d] p-8 md:p-10 bg-[#1d1b1a] reveal-up">
+                        <p class="text-[10px] tracking-[0.2em] uppercase text-[#8a8681] mb-5">Performance Snapshot</p>
+                        <div class="grid grid-cols-2 gap-5">
+                            <div class="rounded-xl bg-[#24211f] border border-[#36312e] p-5">
+                                <p class="text-3xl md:text-4xl font-thin tracking-tight">41%</p>
+                                <p class="mt-2 text-[10px] uppercase tracking-[0.18em] text-[#8a8681]">Fatigue Reduction</p>
+                            </div>
+                            <div class="rounded-xl bg-[#24211f] border border-[#36312e] p-5">
+                                <p class="text-3xl md:text-4xl font-thin tracking-tight">2.8x</p>
+                                <p class="mt-2 text-[10px] uppercase tracking-[0.18em] text-[#8a8681]">Comfort Retention</p>
+                            </div>
+                            <div class="rounded-xl bg-[#24211f] border border-[#36312e] p-5">
+                                <p class="text-3xl md:text-4xl font-thin tracking-tight">12y</p>
+                                <p class="mt-2 text-[10px] uppercase tracking-[0.18em] text-[#8a8681]">Lifecycle Target</p>
+                            </div>
+                            <div class="rounded-xl bg-[#24211f] border border-[#36312e] p-5">
+                                <p class="text-3xl md:text-4xl font-thin tracking-tight">100%</p>
+                                <p class="mt-2 text-[10px] uppercase tracking-[0.18em] text-[#8a8681]">Source Traceability</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="rounded-2xl border border-[#33302d] p-8 md:p-10 bg-[#1d1b1a] reveal-up">
+                        <p class="text-[10px] tracking-[0.2em] uppercase text-[#8a8681] mb-5">Implementation Timeline</p>
+                        <ol class="space-y-4">
+                            <li class="rounded-xl bg-[#24211f] border border-[#36312e] p-4 flex items-start gap-4">
+                                <span class="text-xs tracking-[0.18em] text-[#8a8681] pt-1">W1</span>
+                                <p class="text-sm text-[#d5d0c9] leading-relaxed">Discovery workshop and movement-pattern interviews with team leads.</p>
+                            </li>
+                            <li class="rounded-xl bg-[#24211f] border border-[#36312e] p-4 flex items-start gap-4">
+                                <span class="text-xs tracking-[0.18em] text-[#8a8681] pt-1">W2</span>
+                                <p class="text-sm text-[#d5d0c9] leading-relaxed">Spatial diagnostics, pressure profile capture, and support matrix draft.</p>
+                            </li>
+                            <li class="rounded-xl bg-[#24211f] border border-[#36312e] p-4 flex items-start gap-4">
+                                <span class="text-xs tracking-[0.18em] text-[#8a8681] pt-1">W3</span>
+                                <p class="text-sm text-[#d5d0c9] leading-relaxed">Pilot deployment, calibration refinements, and lifecycle handover setup.</p>
+                            </li>
+                        </ol>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- 11: Consultation Form (kept) -->
+        <section class="bg-[#fbf9f6] text-[#2d2a28] py-32 md:py-48 px-6 md:px-12 lg:px-20">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-24 reveal-up">
+                    <span class="text-xs tracking-[0.2em] text-[#8a8681] uppercase mb-6 block">Connect</span>
+                    <h2 class="text-5xl md:text-7xl font-thin tracking-tighter uppercase leading-[0.9] text-[#2d2a28] mb-8">Request a<br>Consultation</h2>
+                    <p class="text-lg md:text-xl font-light text-[#5e5a55] max-w-xl mx-auto leading-relaxed">Our engineering team is available to calibrate piece metrics precisely to your spatial and biomechanical requirements.</p>
+                </div>
+
+                <form class="max-w-3xl mx-auto space-y-12 reveal-up">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                        <div class="flex flex-col gap-3 relative group">
+                            <label for="fname" class="text-xs tracking-[0.2em] text-[#8a8681] uppercase transition-colors group-focus-within:text-[#2d2a28]">First Name</label>
+                            <input type="text" id="fname" class="w-full bg-transparent border-b border-[#d3cfc7] py-4 text-xl font-light text-[#2d2a28] focus:outline-none focus:border-[#2d2a28] transition-colors placeholder:text-[#d3cfc7]" placeholder="John">
+                        </div>
+                        <div class="flex flex-col gap-3 relative group">
+                            <label for="lname" class="text-xs tracking-[0.2em] text-[#8a8681] uppercase transition-colors group-focus-within:text-[#2d2a28]">Last Name</label>
+                            <input type="text" id="lname" class="w-full bg-transparent border-b border-[#d3cfc7] py-4 text-xl font-light text-[#2d2a28] focus:outline-none focus:border-[#2d2a28] transition-colors placeholder:text-[#d3cfc7]" placeholder="Doe">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-3 relative group">
+                        <label for="email" class="text-xs tracking-[0.2em] text-[#8a8681] uppercase transition-colors group-focus-within:text-[#2d2a28]">Email Address</label>
+                        <input type="email" id="email" class="w-full bg-transparent border-b border-[#d3cfc7] py-4 text-xl font-light text-[#2d2a28] focus:outline-none focus:border-[#2d2a28] transition-colors placeholder:text-[#d3cfc7]" placeholder="john@example.com">
+                    </div>
+
+                    <div class="flex flex-col gap-3 relative group">
+                        <label for="interest" class="text-xs tracking-[0.2em] text-[#8a8681] uppercase transition-colors group-focus-within:text-[#2d2a28]">Area of Interest</label>
+                        <div class="relative">
+                            <select id="interest" class="w-full bg-transparent border-b border-[#d3cfc7] py-4 text-xl font-light text-[#2d2a28] focus:outline-none focus:border-[#2d2a28] transition-colors appearance-none cursor-pointer uppercase tracking-tight">
+                                <option value="residential">Residential Integration</option>
+                                <option value="commercial">Commercial Space</option>
+                                <option value="custom">Bespoke Configuration</option>
+                                <option value="other">Other Inquiry</option>
+                            </select>
+                            <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-[#8a8681]">
+                                <iconify-icon icon="solar:alt-arrow-down-linear" width="24" height="24" style="stroke-width: 1.5;"></iconify-icon>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-8">
+                        <label class="flex items-center gap-4 cursor-pointer relative group w-full md:w-auto">
+                            <input type="checkbox" class="peer sr-only">
+                            <div class="w-6 h-6 border border-[#d3cfc7] rounded-sm flex items-center justify-center peer-checked:bg-[#2d2a28] peer-checked:border-[#2d2a28] group-hover:border-[#2d2a28] transition-all">
+                                <iconify-icon icon="solar:check-read-linear" width="16" height="16" class="opacity-0 peer-checked:opacity-100 text-[#f4f1eb] transition-opacity"></iconify-icon>
+                            </div>
+                            <span class="text-sm font-light text-[#5e5a55] select-none uppercase tracking-widest text-xs">Subscribe to Journal</span>
+                        </label>
+
+                        <button type="button" class="w-full md:w-auto bg-[#1a1817] text-[#eae7e1] px-10 py-5 rounded-full text-sm font-light uppercase tracking-[0.2em] flex items-center justify-center gap-4 hover:bg-[#33302d] hover:shadow-2xl transition-all hover:-translate-y-1">
+                            Submit Request
+                            <iconify-icon icon="solar:arrow-right-linear" width="18" height="18" class="opacity-70" style="stroke-width: 1.5;"></iconify-icon>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- 12: Expanded Smoother Footer -->
+        <footer class="bg-[#f4f1eb] border-t border-[#e2dfd8] pt-24 md:pt-32 pb-12 px-6 md:px-12 lg:px-20">
+            <div class="max-w-[100rem] mx-auto">
+                <div class="relative overflow-hidden rounded-3xl border border-[#e2dfd8] bg-[#fbf9f5] p-8 md:p-12 mb-14 reveal-up">
+                    <img src="https://images.unsplash.com/photo-1770941550709-a555ac4a69b3?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Motto background" class="absolute inset-0 w-full h-full object-cover opacity-35">
+                    <div class="absolute inset-0 bg-gradient-to-r from-[#fbf9f5] via-[#fbf9f5]/90 to-[#fbf9f5]/30"></div>
+                    <div class="relative z-10 max-w-3xl">
+                        <p class="text-[10px] md:text-xs tracking-[0.22em] text-[#8a8681] uppercase">Comfort Legacy CL Motto</p>
+                        <h3 class="text-3xl md:text-5xl font-thin tracking-tight uppercase text-[#2d2a28] mt-5 leading-[1.05]">Form with purpose.<br>Comfort with intelligence.</h3>
+                        <p class="mt-6 text-sm md:text-base text-[#5e5a55] font-light max-w-3xl">We design for the next decade of work and living spaces — where biomechanics, sustainability, and architectural purity are one system.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-12 mb-16 reveal-up">
+                    <div class="space-y-6 lg:col-span-2">
+                        <div class="text-2xl font-light tracking-tight text-[#2d2a28] uppercase">Comfort Legacy CL</div>
+                        <p class="text-sm font-light text-[#5e5a55] max-w-sm leading-relaxed">Precision-engineered seating for those who demand architectural integrity and long-session physical ease.</p>
+                        <div class="flex gap-3 text-[#2d2a28]">
+                            <a href="#" class="w-10 h-10 border border-[#d3cfc7] rounded-full flex items-center justify-center hover:bg-[#2d2a28] hover:text-[#eae7e1] hover:border-[#2d2a28] transition-all duration-300"><iconify-icon icon="solar:camera-linear" width="16" style="stroke-width: 1.5;"></iconify-icon></a>
+                            <a href="#" class="w-10 h-10 border border-[#d3cfc7] rounded-full flex items-center justify-center hover:bg-[#2d2a28] hover:text-[#eae7e1] hover:border-[#2d2a28] transition-all duration-300"><iconify-icon icon="solar:chat-round-dots-linear" width="16" style="stroke-width: 1.5;"></iconify-icon></a>
+                            <a href="#" class="w-10 h-10 border border-[#d3cfc7] rounded-full flex items-center justify-center hover:bg-[#2d2a28] hover:text-[#eae7e1] hover:border-[#2d2a28] transition-all duration-300"><iconify-icon icon="solar:letter-linear" width="16" style="stroke-width: 1.5;"></iconify-icon></a>
+                        </div>
+                    </div>
+
+                    <div class="space-y-5">
+                        <h4 class="text-xs tracking-[0.2em] text-[#8a8681] uppercase font-light">Explore</h4>
+                        <ul class="space-y-3 text-sm font-light text-[#5e5a55] uppercase tracking-wider">
+                            <li><a class="footer-link block w-fit" href="#materials">Sustainability Materials</a></li>
+                            <li><a class="footer-link block w-fit" href="#testimonials-columns">What Clients Say</a></li>
+                            <li><a class="footer-link block w-fit" href="#future-protocol">Future Seating Protocol</a></li>
+                            <li><a class="footer-link block w-fit" href="#">Journal</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="space-y-5">
+                        <h4 class="text-xs tracking-[0.2em] text-[#8a8681] uppercase font-light">Resources</h4>
+                        <ul class="space-y-3 text-sm font-light text-[#5e5a55] uppercase tracking-wider">
+                            <li><a class="footer-link block w-fit" href="#">Material Passport</a></li>
+                            <li><a class="footer-link block w-fit" href="#">Care Instructions</a></li>
+                            <li><a class="footer-link block w-fit" href="#">Warranty Protocol</a></li>
+                            <li><a class="footer-link block w-fit" href="#">Shipping & Returns</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="space-y-5">
+                        <h4 class="text-xs tracking-[0.2em] text-[#8a8681] uppercase font-light">Contact</h4>
+                        <ul class="space-y-4 text-sm font-light text-[#5e5a55] tracking-wide">
+                            <li class="flex items-center gap-3"><iconify-icon icon="solar:map-point-linear" width="16" style="stroke-width: 1.5;"></iconify-icon> New York Studio</li>
+                            <li class="flex items-center gap-3"><iconify-icon icon="solar:phone-linear" width="16" style="stroke-width: 1.5;"></iconify-icon> +1 (212) 555-0188</li>
+                            <li class="flex items-center gap-3"><iconify-icon icon="solar:letter-linear" width="16" style="stroke-width: 1.5;"></iconify-icon> hello@comfortlegacycl.com</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="border-t border-[#e2dfd8] pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] sm:text-xs tracking-[0.2em] text-[#8a8681] uppercase font-light reveal-up">
+                    <p>© 2026 Comfort Legacy CL.</p>
+                    <div class="flex gap-8 flex-wrap justify-center">
+                        <span>Engineered in New York</span>
+                        <span>Spec. V.3.0.0</span>
+                        <span>Privacy</span>
+                        <span>Terms</span>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <button id="back-to-top" aria-label="Back to top" class="fixed bottom-6 right-6 z-[115] w-12 h-12 rounded-full bg-[#ebe6dd] border border-[#cfc8bc] text-[#2d2a28] shadow-lg hover:shadow-xl hover:-translate-y-1 hover:bg-[#dfd7ca] transition-all duration-300 flex items-center justify-center">
+            <iconify-icon icon="solar:arrow-up-linear" width="22" height="22" style="stroke-width: 1.8;"></iconify-icon>
+        </button>
+    </div>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        const lenis = new Lenis({
+            duration: 1.08,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            direction: 'vertical',
+            smooth: true,
+            touchMultiplier: 1.7,
+            wheelMultiplier: 0.95,
+        });
+
+        lenis.stop();
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        lenis.on('scroll', ScrollTrigger.update);
+
+        const progressQuick = gsap.quickTo('#scroll-progress-bar', 'scaleX', {
+            duration: 0.2,
+            ease: 'none'
+        });
+
+        lenis.on('scroll', (event) => {
+            progressQuick(event.progress);
+        });
+
+        const loaderOverlay = document.getElementById('loader-overlay');
+        const welcomeOverlay = document.getElementById('welcome-overlay');
+        const welcomeText = document.getElementById('welcome-text');
+        const siteShell = document.getElementById('site-shell');
+
+        function runIntroSequence() {
+            const introTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+            introTl
+                .to(loaderOverlay, { autoAlpha: 0, duration: 0.42, ease: 'power2.inOut' })
+                .set(loaderOverlay, { display: 'none' })
+                .set(welcomeOverlay, { display: 'grid' })
+                .to(welcomeOverlay, { autoAlpha: 1, duration: 0.25 })
+                .fromTo(welcomeText, { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.55 })
+                .to(welcomeText, { autoAlpha: 0, y: -16, duration: 0.42, delay: 0.2 })
+                .to(welcomeOverlay, { autoAlpha: 0, duration: 0.28 }, '-=0.2')
+                .set(welcomeOverlay, { display: 'none' })
+                .to(siteShell, { autoAlpha: 1, duration: 0.62, ease: 'power2.out' })
+                .add(() => {
+                    document.body.classList.remove('overflow-y-hidden');
+                    lenis.start();
+                    initPageAnimations();
+                });
+        }
+
+        window.addEventListener('load', () => {
+            setTimeout(runIntroSequence, 380);
+        });
+
+        function initPageAnimations() {
+            initNavigation();
+            initRevealAnimations();
+            initHorizontalScroll();
+            initEngineeringAccordion();
+            initMaterialShowcase();
+            initTestimonialsLoop();
+            initWaveQuote();
+            initSecretHoverInfo();
+            initCustomCursor();
+            initBackToTop();
+        }
+
+        function initNavigation() {
+            const openBtn = document.getElementById('open-menu');
+            const closeBtn = document.getElementById('close-menu');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const siteNav = document.getElementById('site-nav');
+
+            if (!openBtn || !closeBtn || !mobileMenu || !siteNav) return;
+
+            let navHidden = false;
+            let lastY = 0;
+            let menuOpen = false;
+            let wasMobile = window.matchMedia('(max-width: 767px)').matches;
+
+            gsap.set(mobileMenu, { x: '100%', xPercent: 0, autoAlpha: 1 });
+            if (siteNav) gsap.set(siteNav, { y: 0, autoAlpha: 1 });
+
+            function showNav() {
+                if (!siteNav) return;
+                navHidden = false;
+                gsap.to(siteNav, { y: 0, autoAlpha: 1, duration: 0.3, ease: 'power2.out', overwrite: true });
+            }
+
+            function hideNav() {
+                if (!siteNav) return;
+                navHidden = true;
+                gsap.to(siteNav, { y: -110, duration: 0.32, ease: 'power2.out', overwrite: true });
+            }
+
+            function closeMenu(options = {}) {
+                const immediate = options.immediate === true;
+                const duration = immediate ? 0.2 : 0.55;
+
+                gsap.to(mobileMenu, {
+                    x: '100%',
+                    duration,
+                    ease: immediate ? 'power1.out' : 'power3.inOut',
+                    onComplete: () => {
+                        menuOpen = false;
+                        mobileMenu.classList.add('pointer-events-none');
+                    }
+                });
+            }
+
+            lenis.on('scroll', (event) => {
+                if (!siteNav) return;
+                const currentY = event.animatedScroll;
+
+                if (menuOpen) {
+                    lastY = currentY;
+                    return;
+                }
+
+                if (currentY < 90) {
+                    showNav();
+                    lastY = currentY;
+                    return;
+                }
+
+                const scrollingDown = event.direction === 1 || currentY > lastY + 1.5;
+                const scrollingUp = event.direction === -1 || currentY < lastY - 1.5;
+
+                if (scrollingDown && !navHidden) {
+                    hideNav();
+                } else if (scrollingUp && navHidden) {
+                    showNav();
+                }
+
+                lastY = currentY;
+            });
+
+            openBtn.addEventListener('click', () => {
+                menuOpen = true;
+                showNav();
+                mobileMenu.classList.remove('pointer-events-none');
+                gsap.to(mobileMenu, { x: '0%', duration: 0.62, ease: 'power3.out' });
+            });
+
+            closeBtn.addEventListener('click', () => closeMenu());
+
+            window.addEventListener('resize', () => {
+                const isMobile = window.matchMedia('(max-width: 767px)').matches;
+                if (isMobile !== wasMobile) {
+                    closeMenu({ immediate: true });
+                    showNav();
+                }
+                wasMobile = isMobile;
+            });
+        }
+
+        function initWaveQuote() {
+            const quoteEl = document.getElementById('wave-quote');
+            if (!quoteEl) return;
+
+            const rawText = quoteEl.textContent || '';
+            const words = rawText.trim().split(' ');
+            quoteEl.innerHTML = words.map((word, index) => `<span class="wave-word" data-wave-index="${index}">${word}${index < words.length - 1 ? '&nbsp;' : ''}</span>`).join('');
+
+            const waveWords = quoteEl.querySelectorAll('.wave-word');
+            gsap.fromTo(waveWords,
+                {
+                    opacity: 0,
+                    y: (index) => 22 + Math.sin(index * 0.8) * 12,
+                    filter: 'blur(3px)'
+                },
+                {
+                    opacity: 1,
+                    y: 0,
+                    filter: 'blur(0px)',
+                    duration: 0.85,
+                    ease: 'power3.out',
+                    stagger: {
+                        each: 0.035,
+                        from: 'start'
+                    },
+                    scrollTrigger: {
+                        trigger: quoteEl,
+                        start: 'top 85%',
+                        once: true
+                    }
+                }
+            );
+        }
+
+        function initToggle() {
+            const toggleBtn = document.getElementById('calibration-toggle');
+            const toggleKnob = document.getElementById('toggle-knob');
+            const toggleIcon = document.getElementById('toggle-icon');
+            const lblStatic = document.getElementById('label-static');
+            const lblKinetic = document.getElementById('label-kinetic');
+            const toggleDesc = document.getElementById('toggle-desc');
+            const targetReticle = document.getElementById('target-reticle');
+
+            if (!toggleBtn || !toggleKnob || !toggleIcon || !lblStatic || !lblKinetic || !toggleDesc || !targetReticle) return;
+
+            let isKinetic = false;
+
+            toggleBtn.addEventListener('click', () => {
+                isKinetic = !isKinetic;
+                if (isKinetic) {
+                    toggleBtn.classList.replace('bg-[#d3cfc7]', 'bg-[#2d2a28]');
+                    toggleBtn.classList.replace('hover:bg-[#a8a39d]', 'hover:bg-[#1a1817]');
+                    toggleKnob.classList.add('translate-x-10');
+                    toggleKnob.classList.replace('text-[#2d2a28]', 'text-[#8a8681]');
+                    toggleIcon.setAttribute('icon', 'solar:unlock-linear');
+                    lblStatic.classList.replace('text-[#2d2a28]', 'text-[#8a8681]');
+                    lblKinetic.classList.replace('text-[#8a8681]', 'text-[#2d2a28]');
+                    toggleDesc.innerText = 'Fluid kinetic response for dynamic movement.';
+                    targetReticle.classList.add('scale-150', 'border-dashed');
+                } else {
+                    toggleBtn.classList.replace('bg-[#2d2a28]', 'bg-[#d3cfc7]');
+                    toggleBtn.classList.replace('hover:bg-[#1a1817]', 'hover:bg-[#a8a39d]');
+                    toggleKnob.classList.remove('translate-x-10');
+                    toggleKnob.classList.replace('text-[#8a8681]', 'text-[#2d2a28]');
+                    toggleIcon.setAttribute('icon', 'solar:lock-linear');
+                    lblStatic.classList.replace('text-[#8a8681]', 'text-[#2d2a28]');
+                    lblKinetic.classList.replace('text-[#2d2a28]', 'text-[#8a8681]');
+                    toggleDesc.innerText = 'Locked rigid form for focused tasks.';
+                    targetReticle.classList.remove('scale-150', 'border-dashed');
+                }
+            });
+        }
+
+        function initEngineeringAccordion() {
+            const root = document.getElementById('engineering-accordion');
+            if (!root) return;
+
+            const items = Array.from(root.querySelectorAll('.engineering-item'));
+            const triggers = Array.from(root.querySelectorAll('.engineering-trigger'));
+            if (!items.length || !triggers.length) return;
+
+            function closeAll(exceptItem) {
+                items.forEach((item) => {
+                    if (item !== exceptItem) item.classList.remove('open');
+                });
+            }
+
+            triggers.forEach((trigger) => {
+                trigger.addEventListener('click', () => {
+                    const item = trigger.closest('.engineering-item');
+                    if (!item) return;
+
+                    const willOpen = !item.classList.contains('open');
+                    closeAll(item);
+                    if (willOpen) {
+                        item.classList.add('open');
+                    } else {
+                        item.classList.remove('open');
+                    }
+                });
+            });
+        }
+
+        function initRevealAnimations() {
+            const heroTl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+            heroTl
+                .to('.hero-img-wrap', { clipPath: 'inset(0% 0 0 0)', duration: 1.8, ease: 'power4.inOut' })
+                .to('.hero-img', { scale: 1, duration: 1.8, ease: 'power4.inOut' }, '<')
+                .to('.hero-el', { y: 0, opacity: 1, scaleX: 1, duration: 0.95, stagger: 0.12 }, '-=1.0');
+
+            const staggerTexts = document.querySelectorAll('.reveal-text-stagger');
+            staggerTexts.forEach((text) => {
+                gsap.fromTo(text,
+                    { opacity: 0, y: 30 },
+                    { opacity: 1, y: 0, duration: 1.1, ease: 'power3.out', scrollTrigger: { trigger: text, start: 'top 85%' } }
+                );
+            });
+
+            const upReveals = document.querySelectorAll('.reveal-up');
+            upReveals.forEach((el) => {
+                gsap.fromTo(el,
+                    { opacity: 0, y: 28 },
+                    { opacity: 1, y: 0, duration: 0.9, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 90%' } }
+                );
+            });
+
+            const scaleReveals = document.querySelectorAll('.reveal-scale');
+            scaleReveals.forEach((el) => {
+                gsap.fromTo(el,
+                    { clipPath: 'inset(10% 0 10% 0)', scale: 0.95, opacity: 0 },
+                    { clipPath: 'inset(0% 0 0% 0)', scale: 1, opacity: 1, duration: 1.35, ease: 'power3.inOut', scrollTrigger: { trigger: el, start: 'top 85%' } }
+                );
+            });
+
+            gsap.utils.toArray('.parallax-img').forEach((img) => {
+                gsap.to(img, { yPercent: 15, ease: 'none', scrollTrigger: { trigger: img.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } });
+            });
+        }
+
+        function initHorizontalScroll() {
+            const horizontalSection = document.querySelector('.horizontal-scroll-section');
+            const horizontalContainer = document.querySelector('.horizontal-scroll-container');
+            if (!horizontalSection || !horizontalContainer) return;
+
+            function getScrollAmount() {
+                return -(horizontalContainer.scrollWidth - window.innerWidth);
+            }
+
+            const tween = gsap.to(horizontalContainer, {
+                x: getScrollAmount,
+                ease: 'none'
+            });
+
+            ScrollTrigger.create({
+                trigger: horizontalSection,
+                start: 'top top',
+                end: () => `+=${getScrollAmount() * -1}`,
+                pin: true,
+                animation: tween,
+                scrub: 1,
+                invalidateOnRefresh: true
+            });
+
+            gsap.utils.toArray('.gallery-parallax').forEach((img) => {
+                gsap.to(img, {
+                    xPercent: 10,
+                    ease: 'none',
+                    scrollTrigger: {
+                        trigger: horizontalSection,
+                        start: 'top top',
+                        end: () => `+=${getScrollAmount() * -1}`,
+                        scrub: 1
+                    }
+                });
+            });
+        }
+
+        function initMaterialShowcase() {
+            const items = Array.from(document.querySelectorAll('.material-item'));
+            const image = document.getElementById('material-image');
+            const title = document.getElementById('material-title');
+            const desc = document.getElementById('material-desc');
+            const section = document.getElementById('materials');
+
+            if (!items.length || !image || !title || !desc) return;
+
+            let activeIndex = 0;
+            let cycleTimer = null;
+
+            function setActive(index) {
+                const selected = items[index];
+                if (!selected) return;
+                activeIndex = index;
+
+                items.forEach((item, i) => item.classList.toggle('active', i === index));
+
+                gsap.to(image, {
+                    autoAlpha: 0,
+                    scale: 1.04,
+                    duration: 0.22,
+                    onComplete: () => {
+                        image.src = selected.dataset.image;
+                        title.textContent = selected.dataset.title;
+                        desc.textContent = selected.dataset.desc;
+                        gsap.to(image, { autoAlpha: 1, scale: 1, duration: 0.48, ease: 'power2.out' });
+                    }
+                });
+            }
+
+            function startCycle() {
+                stopCycle();
+                cycleTimer = setInterval(() => {
+                    const next = (activeIndex + 1) % items.length;
+                    setActive(next);
+                }, 3400);
+            }
+
+            function stopCycle() {
+                if (cycleTimer) clearInterval(cycleTimer);
+            }
+
+            items.forEach((item, index) => {
+                item.addEventListener('mouseenter', () => setActive(index));
+                item.addEventListener('focus', () => setActive(index));
+            });
+
+            if (section) {
+                section.addEventListener('mouseenter', stopCycle);
+                section.addEventListener('mouseleave', startCycle);
+            }
+
+            setActive(0);
+            startCycle();
+        }
+
+        function initTestimonialsLoop() {
+            const tracks = document.querySelectorAll('.testimonials-track');
+
+            tracks.forEach((track) => {
+                const speedValue = track.style.getPropertyValue('--speed');
+                const duration = Number.parseFloat(speedValue) || 28;
+                const distance = track.scrollHeight / 2;
+
+                const tween = gsap.to(track, {
+                    y: -distance,
+                    duration,
+                    ease: 'none',
+                    repeat: -1,
+                    force3D: true
+                });
+
+                const container = track.closest('.testimonials-col');
+                if (!container) return;
+
+                container.addEventListener('mouseenter', () => tween.pause());
+                container.addEventListener('mouseleave', () => tween.resume());
+            });
+        }
+
+        function initSecretHoverInfo() {
+            const popup = document.getElementById('secret-popup');
+            const zones = document.querySelectorAll('.hover-secret');
+            if (!popup || !zones.length) return;
+
+            let activeZone = null;
+
+            const setLeft = gsap.quickTo(popup, 'left', { duration: 0.1, ease: 'power3.out' });
+            const setTop = gsap.quickTo(popup, 'top', { duration: 0.1, ease: 'power3.out' });
+
+            function positionPopup(event) {
+                const offset = 18;
+                const popupWidth = popup.offsetWidth || 260;
+                const popupHeight = popup.offsetHeight || 90;
+                const maxLeft = window.innerWidth - popupWidth - 10;
+                const maxTop = window.innerHeight - popupHeight - 10;
+
+                const nextLeft = Math.min(event.clientX + offset, maxLeft);
+                const nextTop = Math.min(event.clientY + offset, maxTop);
+
+                setLeft(Math.max(10, nextLeft));
+                setTop(Math.max(10, nextTop));
+            }
+
+            zones.forEach((zone) => {
+                zone.addEventListener('mouseenter', (event) => {
+                    activeZone = zone;
+                    popup.textContent = zone.dataset.secret || 'Additional information available.';
+                    positionPopup(event);
+                    gsap.set(popup, { display: 'block' });
+                    gsap.to(popup, { autoAlpha: 1, duration: 0.16, overwrite: true });
+                });
+
+                zone.addEventListener('mousemove', (event) => {
+                    if (activeZone !== zone) return;
+                    positionPopup(event);
+                });
+
+                zone.addEventListener('mouseleave', () => {
+                    if (activeZone === zone) activeZone = null;
+                    gsap.to(popup, {
+                        autoAlpha: 0,
+                        duration: 0.15,
+                        overwrite: true,
+                        onComplete: () => {
+                            if (!activeZone) gsap.set(popup, { display: 'none', top: -9999, left: -9999 });
+                        }
+                    });
+                });
+            });
+        }
+
+        function initCustomCursor() {
+            if (window.matchMedia('(pointer: coarse)').matches) return;
+
+            const ring = document.getElementById('cursor-ring');
+            const dot = document.getElementById('cursor-dot');
+            if (!ring || !dot) return;
+
+            let mouseX = window.innerWidth / 2;
+            let mouseY = window.innerHeight / 2;
+
+            const moveDotX = gsap.quickTo(dot, 'x', { duration: 0.04, ease: 'power2.out' });
+            const moveDotY = gsap.quickTo(dot, 'y', { duration: 0.04, ease: 'power2.out' });
+            const moveRingX = gsap.quickTo(ring, 'x', { duration: 0.16, ease: 'power3.out' });
+            const moveRingY = gsap.quickTo(ring, 'y', { duration: 0.16, ease: 'power3.out' });
+
+            window.addEventListener('mousemove', (event) => {
+                mouseX = event.clientX;
+                mouseY = event.clientY;
+                moveDotX(mouseX);
+                moveDotY(mouseY);
+                moveRingX(mouseX);
+                moveRingY(mouseY);
+            });
+
+            moveDotX(mouseX);
+            moveDotY(mouseY);
+            moveRingX(mouseX);
+            moveRingY(mouseY);
+        }
+
+        function initBackToTop() {
+            const button = document.getElementById('back-to-top');
+            if (!button) return;
+
+            gsap.set(button, { autoAlpha: 0, y: 14 });
+
+            lenis.on('scroll', (event) => {
+                const show = event.animatedScroll > 420;
+                gsap.to(button, {
+                    autoAlpha: show ? 1 : 0,
+                    y: show ? 0 : 14,
+                    duration: 0.25,
+                    overwrite: true
+                });
+            });
+
+            button.addEventListener('click', () => {
+                lenis.scrollTo(0, {
+                    duration: 1.1,
+                    easing: (t) => 1 - Math.pow(1 - t, 3)
+                });
+            });
+        }
+    </script>
+</body>
+</html>

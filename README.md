@@ -78,3 +78,10 @@ https://denysovski.github.io/CLLegacy/
 
 - `generated-page.html` - Main project page implementation.
 - `index.html` - GitHub Pages entry point (redirects to `generated-page.html`).
+
+First part of the website:
+<img alt="eujuewu" src="https://github.com/user-attachments/assets/98d032c5-f454-419c-9709-fe7651f44d1c" />
+
+Second part of the website:
+<img alt="screencapture-denysovski-github-io-CLLegacy-generated-page-html-2026-03-08-02_22_15" src="https://github.com/user-attachments/assets/2d3f427f-322c-4575-893f-07d02c64d436" />
+
